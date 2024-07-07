@@ -1,19 +1,21 @@
 #!/usr/bin/python3
+"""Defines a function that determines if a box containing a list
+   of lists can be opened using keys stored in the lists
+"""
 
-from collection import deque
 
 def canUnlockAll(boxes):
-    num_boxes = len(boxes)  # Total number of boxes
-    unlocked = [False] * num_boxes # Track if each box is unlocked
-    unlocked[0] = True  # The first box is initially unlock
-    queue = deque([0])  # Start BFS from the first box
-    
-    while queue:
-        current_box = queue.popleft()
-        for key in boxes[current_box]:
-            if key < num_boxes and not unlocked[key]:
-                unlocked[key] = True
-                queue.append(key)
-                
-    return all(unlocked)
+    """Determines if boxes can be unlocked"""
+    position = 0
+    unlocked = {}
 
+    for box in boxes:
+        if len(box) == 0 or position == 0:
+            unlocked[position] = "always_unlocked"
+        for key in box:
+            if key < len(boxes) and key != position:
+                unlocked[key] = key
+        if len(unlocked) == len(boxes):
+            return True
+        position += 1
+    return False
