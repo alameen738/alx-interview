@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+
 def canUnlockAll(boxes):
     n = len(boxes)
     visited = [False] * n
-    visited[0] = True  # The first box is unlocked by default
-
+    visited[0] = True  # The first box is unlocked
     queue = [0]  # Start with the first box
+
     while queue:
         current_box = queue.pop(0)
         for key in boxes[current_box]:
@@ -12,4 +13,4 @@ def canUnlockAll(boxes):
                 visited[key] = True
                 queue.append(key)
 
-    return all(visited)
+    return all(visited[1:])
