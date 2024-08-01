@@ -1,5 +1,3 @@
-### nqueens.py
-```python
 #!/usr/bin/python3
 import sys
 
