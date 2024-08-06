@@ -1,49 +1,25 @@
 #!/usr/bin/node
-
 const request = require('request');
-
-// Get the movie ID from command line arguments
 const movieId = process.argv[2];
+const options = {
+  url: 'https://swapi-api.hbtn.io/api/films/' + movieId,
+  method: 'GET'
+};
 
-// API URL for the specified movie
-const apiUrl = `https://swapi-api.hbtn.io/api/films/${movieId}/`;
-
-// Make a request to the API
-request(apiUrl, (error, response, body) => {
-  if (error) {
-    console.error('Error:', error);
-    return;
+request(options, function (error, response, body) {
+  if (!error) {
+    const characters = JSON.parse(body).characters;
+    printCharacters(characters, 0);
   }
-  const movie = JSON.parse(body);
+});
 
-  // Get the list of character URLs
-  const characters = movie.characters;
-
-  // Function to fetch character name by URL
-  const fetchCharacterName = (url) => {
-    return new Promise((resolve, reject) => {
-      request(url, (error, response, body) => {
-        if (error) {
-          reject(error);
-        } else {
-          const character = JSON.parse(body);
-          resolve(character.name);
-        }
-      });
-    });
-  };
-
-  // Fetch all character names asynchronously
-  const fetchAllCharacters = async () => {
-    for (const url of characters) {
-      try {
-        const name = await fetchCharacterName(url);
-        console.log(name);
-      } catch (error) {
-        console.error('Error:', error);
+function printCharacters (characters, index) {
+  request(characters[index], function (error, response, body) {
+    if (!error) {
+      console.log(JSON.parse(body).name);
+      if (index + 1 < characters.length) {
+        printCharacters(characters, index + 1);
       }
     }
-  };
-
-  fetchAllCharacters();
-});
+  });
+}
